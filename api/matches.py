@@ -33,14 +33,18 @@ async def get_matches(
         if not data:
             raise HTTPException(
                 status_code=404,
-                detail="No se encontró partidos"
+                detail="No se encontraron partidos"
             )
         
-        # Se crea una lista con el ID y el Name de los partidos obtenidos
-        matches_filtered = [{"ID": item["ID"], "Name": item["NM"].get("13")} for item in data.get("result", [])]
+        # Se crea una lista con el id y el nombre de los partidos obtenidos
+        matches_filtered = [{"matchId": item["ID"], "matchName": item["NM"].get("13")} for item in data.get("result", [])]
+
         # Guarda la lista en stored_data
         update_section("matches", matches_filtered)
+
+        # Retorna la lista
         return {"matches": matches_filtered}
+    
     # Si ocurre un error inesperado
     except Exception as e:
         print(f"Error: {e}")

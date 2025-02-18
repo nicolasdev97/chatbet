@@ -31,14 +31,18 @@ async def get_sports(
         if not data:
             raise HTTPException(
                 status_code=404,
-                detail="No se encontró deportes"
+                detail="No se encontraron deportes"
             )
         
-        # Se crea una lista con el ID y el Name de los deportes obtenidos
-        sports_filtered = [{"ID": item["ID"], "Name": item["NM"].get("2")} for item in data.get("result", [])]
+        # Se crea una lista con el id y el nombre de los deportes obtenidos
+        sports_filtered = [{"sportId": item["ID"], "sportName": item["NM"].get("2")} for item in data.get("result", [])]
+
         # Guarda la lista en stored_data
         update_section("sports", sports_filtered)
+
+        # Retorna la lista
         return {"sports": sports_filtered}
+    
     # Si ocurre un error inesperado
     except Exception as e:
         print(f"Error: {e}")

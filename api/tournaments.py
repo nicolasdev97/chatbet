@@ -29,14 +29,18 @@ async def get_tournaments(
         if not data:
             raise HTTPException(
                 status_code=404,
-                detail="No se encontró torneos"
+                detail="No se encontraron torneos"
             )
         
-        # Se crea una lista con el ID y el Name de los torneos obtenidos
-        tournaments_filtered = [{"ID": item["ID"], "Name": item["NM"].get("2")} for item in data.get("result", [])]
+        # Se crea una lista con el id y el nombre de los torneos obtenidos
+        tournaments_filtered = [{"tournamentId": item["ID"], "tournamentName": item["NM"].get("2")} for item in data.get("result", [])]
+
         # Guarda la lista en stored_data
         update_section("tournaments", tournaments_filtered)
+
+        # Retorna la lista
         return {"tournaments": tournaments_filtered}
+    
     # Si ocurre un error inesperado
     except Exception as e:
         print(f"Error: {e}")

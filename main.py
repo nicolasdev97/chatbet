@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from api import sports, championships, tournaments, matches, data
 
-# Se crea la API
+# Crea la API
 app = FastAPI()
 
-# Se incluyen las rutas para consumir las APIs externas
+# Incluye las rutas para consumir las APIs externas
 app.include_router(sports.router)
 app.include_router(championships.router)
 app.include_router(tournaments.router)
