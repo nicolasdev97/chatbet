@@ -33,7 +33,11 @@ async def get_tournaments(
             )
         
         # Crea una lista con el id y el nombre de los torneos obtenidos
-        tournaments_filtered = [{"tournamentId": item["ID"], "tournamentName": item["NM"].get("2")} for item in data.get("result", [])]
+        tournaments_filtered = [{
+            "championshipID": item["CHIID"],
+            "tournamentId": item["ID"],
+            "tournamentName": item["NM"].get("2")}
+            for item in data.get("result", [])]
 
         # Guarda la lista en stored_data
         update_section("tournaments", tournaments_filtered)

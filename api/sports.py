@@ -35,7 +35,10 @@ async def get_sports(
             )
         
         # Crea una lista con el id y el nombre de los deportes obtenidos
-        sports_filtered = [{"sportId": item["ID"], "sportName": item["NM"].get("2")} for item in data.get("result", [])]
+        sports_filtered = [{
+            "sportId": item["ID"],
+            "sportName": item["NM"].get("2")}
+            for item in data.get("result", [])]
 
         # Guarda la lista en stored_data
         update_section("sports", sports_filtered)

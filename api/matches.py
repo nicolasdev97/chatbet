@@ -37,7 +37,15 @@ async def get_matches(
             )
         
         # Crea una lista con el id y el nombre de los partidos obtenidos
-        matches_filtered = [{"matchId": item["ID"], "matchName": item["NM"].get("13")} for item in data.get("result", [])]
+        matches_filtered = [{
+            "tournamentID": item["TIID"],
+            "matchId": item["ID"],
+            "homeTeamName": item["HNM"].get("13"),
+            "homeTeamID": item["HCIDS"][0],
+            "awayTeamName": item["ANM"].get("13"),
+            "awayTeamID": item["ACIDS"][0],
+            "startDate": item["StartDate"]}
+            for item in data.get("result", [])]
 
         # Guarda la lista en stored_data
         update_section("matches", matches_filtered)
