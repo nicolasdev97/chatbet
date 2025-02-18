@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from services.fetch_data import fetch_data
+from storage import update_section
 
 # Se crea una instancia del router
 router = APIRouter()
@@ -35,6 +36,8 @@ async def get_championships(
         
         # Se crea una lista con el ID y el Name de los campeonatos obtenidos
         championships_filtered = [{"ID": item["ID"], "Name": item["NM"].get("13")} for item in data.get("result", [])]
+        # Guarda la lista en stored_data
+        update_section("championships", championships_filtered)
         return {"championships": championships_filtered}
     # Si ocurre un error inesperado
     except Exception as e:
