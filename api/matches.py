@@ -5,8 +5,8 @@ from storage import update_section
 # Se crea una instancia del router
 router = APIRouter()
 
-# Se define el endpoint de get-matches
-# Asíncrona para que no detenga la ejecución
+# Define el endpoint de get-matches
+# Asíncrona para que no bloquee la app
 # Se pasan parámetros con valores por defecto
 @router.get("/get-matches")
 async def get_matches(
@@ -26,7 +26,7 @@ async def get_matches(
         "sttIds": sttIds
     }
     try:
-        # Se llama a la función fetch_data pasando el endpoint y sus parametros
+        # Llama a la función fetch_data pasando el endpoint y sus parametros
         data = await fetch_data("getMatches", params)
 
         # Si no hay datos
@@ -36,7 +36,7 @@ async def get_matches(
                 detail="No se encontraron partidos"
             )
         
-        # Se crea una lista con el id y el nombre de los partidos obtenidos
+        # Crea una lista con el id y el nombre de los partidos obtenidos
         matches_filtered = [{"matchId": item["ID"], "matchName": item["NM"].get("13")} for item in data.get("result", [])]
 
         # Guarda la lista en stored_data

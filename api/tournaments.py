@@ -2,11 +2,11 @@ from fastapi import APIRouter, HTTPException
 from services.fetch_data import fetch_data
 from storage import update_section
 
-# Se crea una instancia del router
+# Crea una instancia del router
 router = APIRouter()
 
-# Se define el endpoint de get-tournaments
-# Asíncrona para que no detenga la ejecución
+# Define el endpoint de get-tournaments
+# Asíncrona para que no bloquee la app
 # Se pasan parámetros con valores por defecto
 @router.get("/get-tournaments")
 async def get_tournaments(
@@ -22,7 +22,7 @@ async def get_tournaments(
         "cC": cC
     }
     try:
-        # Se llama a la función fetch_data pasando el endpoint y sus parametros
+        # Llama a la función fetch_data pasando el endpoint y sus parametros
         data = await fetch_data("getTournaments", params)
 
         # Si no hay datos
@@ -32,7 +32,7 @@ async def get_tournaments(
                 detail="No se encontraron torneos"
             )
         
-        # Se crea una lista con el id y el nombre de los torneos obtenidos
+        # Crea una lista con el id y el nombre de los torneos obtenidos
         tournaments_filtered = [{"tournamentId": item["ID"], "tournamentName": item["NM"].get("2")} for item in data.get("result", [])]
 
         # Guarda la lista en stored_data
