@@ -39,10 +39,10 @@ async def get_tournaments(
             "tournamentName": item["NM"].get("2")}
             for item in data.get("result", [])]
 
-        # Guarda la lista en stored_data
+        # Guarda los datos de la lista en stored_data
         update_section("tournaments", tournaments_filtered)
 
-        # Retorna la lista
+        # Retorna los datos
         return {"tournaments": tournaments_filtered}
     
     # Si ocurre un error inesperado

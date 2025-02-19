@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from services.fetch_data import fetch_data
 from storage import update_section
+from api.odds import set_matches_data
 
-# Se crea una instancia del router
+# Crea una instancia del router
 router = APIRouter()
 
 # Define el endpoint de get-matches
@@ -47,10 +48,13 @@ async def get_matches(
             "startDate": item["StartDate"]}
             for item in data.get("result", [])]
 
-        # Guarda la lista en stored_data
+        # Guarda los datos de la lista en stored_data
         update_section("matches", matches_filtered)
 
-        # Retorna la lista
+        # Pasa los datos de la lista a odds.py
+        set_matches_data(data)
+
+        # Retorna los datos
         return {"matches": matches_filtered}
     
     # Si ocurre un error inesperado

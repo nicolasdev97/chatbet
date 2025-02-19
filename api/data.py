@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from storage import stored_data
 
+# Crea una instancia del router
 router = APIRouter()
 
 # Define el endpoint de get-all-data
@@ -40,7 +41,7 @@ async def get_all_data(section: str | None = None, id: int | None = None):
                 detail="Para buscar un id debe especificar una sección"
             )
         
-        # Retorna la lista
+        # Retorna los datos
         return stored_data
     
     # Si ocurre un error inesperado
