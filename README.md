@@ -8,8 +8,11 @@ API desarrollada con FastAPI que consume apuestas deportivas desde una API exter
 
 ### Clonar el repositorio
 
+"``
 git clone chatbet
 cd chatbet
+`"
+
 
 ### Crear y activar el entorno virtual
 
