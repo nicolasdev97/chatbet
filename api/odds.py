@@ -20,6 +20,7 @@ def set_matches_data(data: List[Dict[str, Any]]):
 # Sin parámetros
 @router.get("/get-odds")
 async def get_odds(
+    amount: float,
     tournamentId: int | None = None,
     matchId: int | None = None
 ):
@@ -31,31 +32,31 @@ async def get_odds(
         )
     
     # Retorna la respuesta de process_odds con los datos
-    return process_odds(matches_data)
+    return process_odds(matches_data, amount)
 
 # Estructura los datos
-def process_odds(data: List[Dict[str, Any]]):
+def process_odds(data: List[Dict[str, Any]], amount: float):
     try:
         odds_data = [{
             "oddsData": {
                 "result": {
                     "tie": {
                         "name": item["STKS"][0]["NM"].get("13"),
-                        "profit": 4.2,
-                        "odds": 320,
-                        "betId": 4638174029
+                        "profit": item["STKS"][0]["FCR"] * amount,
+                        "odds": item["STKS"][0]["FCR"],
+                        "betId": item["STKS"][0]["ID"]
                     },
                     "homeTeam": {
                         "name": item["STKS"][1]["NM"].get("13"),
-                        "profit": 1.55,
-                        "odds": -182,
-                        "betId": 4638174136
+                        "profit": item["STKS"][1]["FCR"] * amount,
+                        "odds": item["STKS"][1]["FCR"],
+                        "betId": item["STKS"][1]["ID"]
                     },
                     "awayTeam": {
                         "name": item["STKS"][2]["NM"].get("13"),
-                        "profit": 6.1,
-                        "odds": 510,
-                        "betId": 4638174262
+                        "profit": item["STKS"][2]["FCR"] * amount,
+                        "odds": item["STKS"][2]["FCR"],
+                        "betId": item["STKS"][2]["ID"]
                     }
                 },
                 "over_under": {

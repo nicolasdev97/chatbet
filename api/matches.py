@@ -12,7 +12,7 @@ router = APIRouter()
 @router.get("/get-matches")
 async def get_matches(
     lIds: int = 13,
-    tIds: int = 4584,
+    tIds: int = 998,
     dateFrom: str = "2025-02-13T00:00:00",
     dateTo: str = "2025-02-26T00:00:00",
     cC: str = "DEF",
