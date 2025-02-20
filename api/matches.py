@@ -52,7 +52,7 @@ async def get_matches(
         update_section("matches", matches_filtered)
 
         # Pasa los datos de la lista a odds.py
-        set_matches_data(data)
+        set_matches_data(data, sttIds)
 
         # Retorna los datos
         return {"matches": matches_filtered}

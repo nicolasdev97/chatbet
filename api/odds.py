@@ -8,12 +8,13 @@ router = APIRouter()
 matches_data: List[Dict[str, Any]] = []
 
 # Actualiza los datos desde matches.py
-def set_matches_data(data: List[Dict[str, Any]]):
+def set_matches_data(data: List[Dict[str, Any]], sttIds: int):
     # A la variable global matches_data
     # Se pasa data
     # La cual trae los datos desde matches.py
-    global matches_data
+    global matches_data, sttIds_data
     matches_data = data
+    sttIds_data = sttIds
 
 # Define el endpoint de get-odds
 # Asíncrona para que no bloquee la app
@@ -21,7 +22,6 @@ def set_matches_data(data: List[Dict[str, Any]]):
 @router.get("/get-odds")
 async def get_odds(
     amount: float,
-    sttIds: int,
     tournamentId: int | None = None,
     matchId: int | None = None
 ):
@@ -39,82 +39,27 @@ async def get_odds(
     # ]
     
     # Retorna la respuesta de process_odds con los datos
-    return process_odds(matches_data, amount, sttIds)
+    return process_odds(matches_data, amount, sttIds_data)
 
 # Estructura los datos
-def process_odds(data: List[Dict[str, Any]], amount: float, sttIds: int):
+def process_odds(data: List[Dict[str, Any]], amount: float, sttIds_data: int):
     try:
-
-        # odds_data = [{
-        #     "oddsData": {
-        #         "result": {
-        #             "tie": {
-        #                 "name": item["STKS"][0]["NM"].get("13"),
-        #                 "profit": item["STKS"][0]["FCR"] * amount,
-        #                 "odds": item["STKS"][0]["FCR"],
-        #                 "betId": item["STKS"][0]["ID"]
-        #             },
-        #             "homeTeam": {
-        #                 "name": item["STKS"][1]["NM"].get("13"),
-        #                 "profit": item["STKS"][1]["FCR"] * amount,
-        #                 "odds": item["STKS"][1]["FCR"],
-        #                 "betId": item["STKS"][1]["ID"]
-        #             },
-        #             "awayTeam": {
-        #                 "name": item["STKS"][2]["NM"].get("13"),
-        #                 "profit": item["STKS"][2]["FCR"] * amount,
-        #                 "odds": item["STKS"][2]["FCR"],
-        #                 "betId": item["STKS"][2]["ID"]
-        #             }
-        #         },
-        #         "over_under": {
-        #             "over": {
-        #                 "name": "Más de 3.00",
-        #                 "profit": 2.13,
-        #                 "odds": 113,
-        #                 "betId": 4638174111
-        #             },
-        #             "under": {
-        #                 "name": "Menos de 3.00",
-        #                 "profit": 1.71,
-        #                 "odds": -141,
-        #                 "betId": 4638174059
-        #             }
-        #         },
-        #         "handicap": {
-        #             "homeTeam": {
-        #                 "name": str(item["STKS"][1]["NM"].get("13")) + " -1.00",
-        #                 "profit": 1.87,
-        #                 "odds": -115,
-        #                 "betId": 4638174082
-        #             },
-        #             "awayTeam": {
-        #                 "name": str(item["STKS"][2]["NM"].get("13")) + " 1.00",
-        #                 "profit": 1.93,
-        #                 "odds": -108,
-        #                 "betId": 4638174108
-        #             },
-        #         },
-        #     }
-        # }
-        # for item in data.get("result", [])]
-
         odds_data = []
 
         for item in data.get("result"):
-            if sttIds == 1:
+            if sttIds_data == 1:
                 result_market = {
                     "tie": format_odds(item["STKS"][0], amount),
                     "homeTeam": format_odds(item["STKS"][1], amount),
                     "awayTeam": format_odds(item["STKS"][2], amount)
                 }
-            elif sttIds == 2:
+            elif sttIds_data == 2:
                 result_market = {
-                    "handicap": calculate_main_market_for_segment(item["STKS"], amount, sttIds)
+                    "handicap": calculate_main_market_for_segment(item["STKS"], amount, sttIds_data)
                 }
-            elif sttIds == 3:
+            elif sttIds_data == 3:
                 result_market = {
-                    "over_under": calculate_main_market_for_segment(item["STKS"], amount, sttIds)
+                    "over_under": calculate_main_market_for_segment(item["STKS"], amount, sttIds_data)
                 }
             else:
                 result_market = {
@@ -143,7 +88,7 @@ def format_odds(stake: Dict[str, Any], amount: float):
         "betId": stake["ID"]
     }
 
-def calculate_main_market_for_segment(stakes: List[Dict[str, Any]], amount: float, sttIds: int | None):
+def calculate_main_market_for_segment(stakes: List[Dict[str, Any]], amount: float, sttIds_data: int | None):
     min_diff = float("inf")
     best_pair = None
     n = len(stakes)
@@ -165,12 +110,12 @@ def calculate_main_market_for_segment(stakes: List[Dict[str, Any]], amount: floa
                     best_pair = (stakes[i], stakes[j])
     
     if best_pair:
-        if sttIds == 2:
+        if sttIds_data == 2:
             return {
             "homeTeam": format_odds(best_pair[0], amount),
             "awayTeam": format_odds(best_pair[1], amount)
         }
-        if sttIds == 3:
+        if sttIds_data == 3:
             return {
             "over": format_odds(best_pair[0], amount),
             "under": format_odds(best_pair[1], amount)
